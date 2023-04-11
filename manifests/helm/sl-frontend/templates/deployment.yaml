@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+spec:
+  selector:
+    matchLabels:
+      app: {{ template "fullname" . }}  
+  replicas: {{ .Values.replicas }}
+  # We dont need a large deployment history limit as Helm keeps it's own
+  # history
+  revisionHistoryLimit: 2
+  template:
+    metadata:
+      namespace: {{ .Values.namespace }}
+      labels:
+        app: {{ template "fullname" . }}
+        release: "{{ .Release.Name }}"
+    spec:
+      imagePullSecrets:
+        - name: {{ .Values.image.pullSecret }}
+      containers:
+      - name: server
+        image: {{ template "docker-image" . }}
+        imagePullPolicy: Always
+        ports:
+        # The port that our container listens for HTTP requests on
+        - containerPort: {{ .Values.dockerPort }}
+          name: http
+        # env:
+        # - name: REACT_APP_URL
+        #   value: {{ .Values.config.reactAppUrl }}
+        # - name: GAPI_APP_URL
+        #   value: {{ .Values.config.gapiAppUrl }}
+        # - name: API_KEY
+        #   valueFrom:
+        #     secretKeyRef:        
+        #       name: {{ .Values.image.pullSecret }}
+        #       key: apiKey 
+      {{- if .Values.resources }}
+        resources:
+{{ toYaml .Values.resources | indent 10 }}
+      {{- end }}
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app
+                  operator: In
+                  values:
+                  - {{ template "fullname" . }}
+              topologyKey: kubernetes.io/hostname

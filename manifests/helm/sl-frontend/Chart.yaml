@@ -1,0 +1,10 @@
+apiVersion: v2
+name: react-file-upload 
+version: 1.0.1
+description: A deployment for the Sociallockets react-file-upload-service
+home: https://github.com/sociallocket/react-file-upload-service
+sources:
+  - https://github.com/sociallocket/react-file-upload-service
+maintainers:
+  - name: Social Locket
+    email: engineering@sociallocket.com

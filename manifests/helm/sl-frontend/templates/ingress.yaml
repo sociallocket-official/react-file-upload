@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ template "fullname" . }}
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: {{ template "fullname" . }}
+    chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    release: "{{ .Release.Name }}"
+    heritage: "{{ .Release.Service }}"
+  annotations:
+    cert-manager.io/cluster-issuer: http01-cluster-issuer
+  {{- if eq .Values.ingress.access_policy "public" }}
+    ingress.kubernetes.io/whitelist-source-range: 0.0.0.0/0
+  {{- end }}
+  {{- if .Values.ingress.ssl }}
+    kubernetes.io/tls-acme: "true"
+  {{- end }}
+  {{- range $key, $value := .Values.ingress.annotations }}
+    {{ $key }}: {{ $value | quote }}
+  {{- end }}
+spec:
+  {{- if .Values.ingress.ssl }}
+  tls:
+    - hosts:
+      - green.app.sociallocket.com
+      secretName: sociallocket.com-certificate
+  {{- end }}
+  ingressClassName: {{ .Values.ingress.type }}
+  rules:
+    - host: green.app.{{ .Values.domain }}.com
+      http:
+        paths:
+          - path: /files
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "fullname" . }}
+                port:
+                  number: 80

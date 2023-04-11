@@ -1,0 +1,40 @@
+cluster:
+domain:
+namespace:
+  
+image:
+  pullSecret: react-file-upload 
+dockerImage: 
+dockerTag: 
+dockerPort: 
+config:
+  reactAppUrl: 
+  gapiAppUrl: 
+# Container environment variables
+# ENV:
+#   APP_FOO: bar
+
+# For production always higher than 1, because if one pod dies your app will be unavailable until the pod recovers.
+replicas: 1
+replicasMax: 4
+
+# Limits
+cpuTargetPercentage: 50
+
+ingress:
+  name: 'react-file-upload'
+  type: nginx
+  #subdomain: apps
+
+  # Mark ssl as true to enable SSL on this service
+  #ssl: false
+
+  access_policy: public
+
+  # Mark metric as true to enable custom metrics for your application
+  metric: true
+
+resources:
+  requests:
+    memory: 100Mi
+    cpu: 200m
