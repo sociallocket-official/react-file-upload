@@ -23,12 +23,22 @@ spec:
   {{- if .Values.ingress.ssl }}
   tls:
     - hosts:
-      - green.app.sociallocket.com
+      - test.app.sociallocket.com
       secretName: sociallocket.com-certificate
   {{- end }}
   ingressClassName: {{ .Values.ingress.type }}
   rules:
-    - host: green.app.{{ .Values.domain }}.com
+    - host: test.app.{{ .Values.domain }}.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ template "fullname" . }}
+                port:
+                  number: 80
+    - host: test.app.{{ .Values.domain }}.com
       http:
         paths:
           - path: /files
