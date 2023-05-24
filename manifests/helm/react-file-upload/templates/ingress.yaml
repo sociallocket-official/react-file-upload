@@ -22,13 +22,13 @@ metadata:
 spec:
   {{- if .Values.ingress.ssl }}
   tls:
-  - hosts:
-    - {{ .Values.subdomain }}app.{{ .Values.domain }}.com
-    secretName: {{ .Values.subdomain }}app.{{ .Values.domain }}.com-certificate
+    - hosts:
+      - test.app.sociallocket.com
+      secretName: sociallocket.com-certificate
   {{- end }}
   ingressClassName: {{ .Values.ingress.type }}
   rules:
-    - host: {{ .Values.subdomain }}app.{{ .Values.domain }}.com
+    - host: test.app.{{ .Values.domain }}.com
       http:
         paths:
           - path: /
@@ -38,7 +38,7 @@ spec:
                 name: {{ template "fullname" . }}
                 port:
                   number: 80
-    - host: {{ .Values.subdomain }}app.{{ .Values.domain }}.com
+    - host: test.app.{{ .Values.domain }}.com
       http:
         paths:
           - path: /files
