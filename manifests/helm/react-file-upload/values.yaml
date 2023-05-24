@@ -1,5 +1,6 @@
 cluster:
 domain:
+subdomain:
 namespace:
   
 image:
