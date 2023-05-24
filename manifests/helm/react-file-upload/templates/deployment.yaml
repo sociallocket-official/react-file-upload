@@ -33,9 +33,9 @@ spec:
         # The port that our container listens for HTTP requests on
         - containerPort: {{ .Values.dockerPort }}
           name: http
-        # env:
-        # - name: REACT_APP_URL
-        #   value: {{ .Values.config.reactAppUrl }}
+        env:
+        - name: REACT_APP_URL
+          value: {{ .Values.config.reactAppUrl }}
         # - name: GAPI_APP_URL
         #   value: {{ .Values.config.gapiAppUrl }}
         # - name: API_KEY
